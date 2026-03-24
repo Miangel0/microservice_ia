@@ -8,4 +8,4 @@ tensorflow==2.17.0
 keras==3.11.3
 mediapipe==0.10.14
 
-opencv-contrib-python-headless==4.9.0.80
+opencv-python-headless==4.9.0.80
