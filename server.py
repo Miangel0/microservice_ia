@@ -13,8 +13,9 @@ def hello():
 
 @app.route('/upload_video', methods=['POST'])
 def upload_video():
+    tmp_file = None  # Para poder eliminarlo incluso si falla algo
+
     try:
-        # Validar archivo
         if 'video' not in request.files:
             return jsonify({"error": "No video provided"}), 400
 
@@ -25,7 +26,6 @@ def upload_video():
 
         file_name = secure_filename(video_file.filename)
 
-        # Crear carpeta tmp si no existe
         root_path = os.path.dirname(os.path.abspath(__file__))
         tmp_dir = os.path.join(root_path, 'tmp')
         os.makedirs(tmp_dir, exist_ok=True)
@@ -47,8 +47,12 @@ def upload_video():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+    finally:
+        if tmp_file and os.path.exists(tmp_file):
+            os.remove(tmp_file)
 
-# ⚠️ IMPORTANTE para Railway
+
+# Para Railway
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
